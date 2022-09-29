@@ -1,4 +1,6 @@
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
+/*global vm */
+/*eslint no-undef: "error"*/
 
 class GameUtils {
   constructor(runtime, id) {
