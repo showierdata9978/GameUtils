@@ -101,7 +101,7 @@ class GameUtils {
     try {
       var json = JSON.parse(args.json);
       var name = json.name;
-      await vm._addSprite3(json, await (await fetch(args.uri)).blob());
+      await vm.createSprite(json, await (await fetch(args.uri)).blob());
       this._sprites.push(name);
     } catch (e) {
       console.error(e);
