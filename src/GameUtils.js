@@ -1,17 +1,18 @@
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 
+
 class GameUtils {
     constructor(runtime, id) {
         //ext stuff
-        this.runtime = runtime
+        this.runtime = runtime;
         this.menuIconURI = null;
         this.blockIconURI = null;
-        this.colorScheme = ['#41e2d0', "#0DA57A"]
+        this.colorScheme = ['#41e2d0', "#0DA57A"];
 
         //ext data
-        this.deleted_sprites = {}
-        this._sprites = []
-        this._costumes = []
+        this.deleted_sprites = {};
+        this._sprites = [];
+        this._costumes = [];
 
 
     }
@@ -92,26 +93,29 @@ class GameUtils {
                     }
                 },
                 
-                
+                {
+
+                    
+                }
             ]
-        }
+        };
     }
     async create_sprite(args) {
         try {
-            var json = JSON.parse(args.json)
-            var name = json.name
-            await vm._addSprite3(json, await (await fetch(args.uri)).blob())
-            this._sprites.push(name)
+            var json = JSON.parse(args.json);
+            var name = json.name;
+            await vm._addSprite3(json, await (await fetch(args.uri)).blob());
+            this._sprites.push(name);
 
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
     }
-    async delete_sprite(args) {
+    async delete_sprite(args,  util) {
         try {
-            var sprite = vm.runtime.getTargetByName(args.sprite)
-            this.deleted_sprites[args.sprite] = await vm.runtime.deleteTarget(sprite)
-            this._sprites.splice(this._sprites.indexOf(args.sprite), 1)
+            var sprite = util.target;
+            this.deleted_sprites[args.sprite.id] = await vm.deleteSprite(sprite.id);
+            this._sprites.splice(this._sprites.indexOf(args.sprite), 1);
         } catch (e) {
             console.error(e)
         }
@@ -126,10 +130,10 @@ class GameUtils {
         }
     }
     // costumes
-    async create_costume(args) {
+    async create_costume(args, util) {
         try {
             // get current sprite
-            var costume = vm.runtime.getTargetByName(args.costume)
+            var costume = util.sprite
             var bitmap = await (await fetch(args.uri)).blob()
             costume.setCostume(costume.getCostumeIndexByName(args.costume), bitmap)
 
