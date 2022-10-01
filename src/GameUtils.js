@@ -2,8 +2,7 @@
 /*global vm */
 /*eslint no-undef: "error"*/
 
-const JSZip = require('jszip');
-
+const JSZip = require("jszip");
 
 class GameUtils {
   constructor(runtime, id) {
@@ -104,40 +103,40 @@ class GameUtils {
     try {
       var json = JSON.parse(args.json);
       var name = json.name;
-      var costumes = json['costumes'];
-     
-    
-      json['costumes'] = [];
-    
-      var GottenCostumes = []
+      var costumes = json["costumes"];
+
+      json["costumes"] = [];
+
+      var GottenCostumes = [];
       const zip = new JSZip();
-      zip.file('sprite.json', json);
+      zip.file("sprite.json", json);
       var req;
       for (var costume in costumes) {
-        req = await fetch(costume)
+        req = await fetch(costume);
         if (req.status == 200) {
-          GottenCostumes.push(await req.blob())
+          GottenCostumes.push(await req.blob());
         }
-
       }
       var GottenSounds = [];
-      for (var sound in json['sounds']) {
-        req = await fetch(sound)
+      for (var sound in json["sounds"]) {
+        req = await fetch(sound);
         if (req.status == 200) {
-          GottenSounds.push(await req.blob())
+          GottenSounds.push(await req.blob());
         }
       }
 
-      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip)
+      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip);
 
-      await vm.AddSprite(zip.generateAsync({
-        type: 'blob',
-        mimeType: 'application/x.scratch.sb3',
-        compression: 'DEFLATE',
-        compressionOptions: {
-            level: 6 // Tradeoff between best speed (1) and best compression (9)
-        }
-      }))
+      await vm.AddSprite(
+        zip.generateAsync({
+          type: "blob",
+          mimeType: "application/x.scratch.sb3",
+          compression: "DEFLATE",
+          compressionOptions: {
+            level: 6, // Tradeoff between best speed (1) and best compression (9)
+          },
+        })
+      );
       this._sprites.push(name);
     } catch (e) {
       console.error(e);
