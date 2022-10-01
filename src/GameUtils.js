@@ -1,6 +1,6 @@
 
 //hacky way to import ZipJS
-var ZipJS = import("https://raw.githubusercontent.com/Stuk/jszip/main/dist/jszip.min.js")
+var ZipJS = __webpack_require__(56);
 
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
