@@ -253,7 +253,7 @@ class GameUtils {
     this.audio_player.currentTime = 0;
     this.audio_player.src = URL;
     this.audio_player.play();
-    this.audio_player.loop = true;
+    this.audio_player.loop = false;
   }
 
   stopAudio({}) {
