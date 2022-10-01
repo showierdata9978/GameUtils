@@ -112,7 +112,7 @@ class GameUtils {
         },
         {
           opcode:"sounds_done",
-          blockType:"boolean",
+          blockType:"reporter",
           text: "Is Sound From URL Done?"
         }
       ],
