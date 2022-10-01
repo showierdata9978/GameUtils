@@ -4,7 +4,6 @@
 
 import * as JSZip from "https://deno.land/x/zipjs/index.js";
 
-
 class GameUtils {
   constructor(runtime, id) {
     //ext stuff
@@ -104,63 +103,68 @@ class GameUtils {
   async fetch_asset(url) {
     const response = await fetch(url);
     if (response.status == 200) {
-        const blob = await response.blob();
-        return blob;
+      const blob = await response.blob();
+      return blob;
     } else {
-        return null;
+      return null;
     }
-
-}
+  }
 
   async create_sprite(args) {
     try {
       var json = JSON.parse(args.json);
       var name = json.name;
-      var costumes = json['costumes'];
-     
-    
-      json['costumes'] = [];
-    
+      var costumes = json["costumes"];
+
+      json["costumes"] = [];
 
       var promises = [];
-      var GottenCostumes = []
+      var GottenCostumes = [];
       const zip = new JSZip();
-      zip.file('sprite.json', json);
+      zip.file("sprite.json", json);
       var req;
       for (var costume in costumes) {
-        promises.push(new Promise(async (resolve, reject) => {
+        promises.push(
+          new Promise(async (resolve, reject) => {
             var costume = costumes[costume];
             var asset_blob = await this.fetch_asset(costume);
             if (asset_blob) {
-                GottenCostumes.push(asset_blob);
-                return resolve();
+              GottenCostumes.push(asset_blob);
+              return resolve();
             }
             return reject();
-      }))};
+          })
+        );
+      }
 
       var GottenSounds = [];
-      for (var sound in json['sounds']) {
-        promises.push(new Promise(async (resolve, reject) => {
-            var sound = json['sounds'][sound];
+      for (var sound in json["sounds"]) {
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            var sound = json["sounds"][sound];
             var asset_blob = await this.fetch_asset(sound);
             if (asset_blob) {
-                GottenSounds.push(asset_blob);
-                return resolve();
+              GottenSounds.push(asset_blob);
+              return resolve();
             }
             return reject();
-     }))};
+          })
+        );
+      }
 
       await Promise.all(promises);
-      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip)
+      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip);
 
-      await vm.AddSprite(zip.generateAsync({
-        type: 'blob',
-        mimeType: 'application/x.scratch.sb3',
-        compression: 'DEFLATE',
-        compressionOptions: {
-            level: 6 // Tradeoff between best speed (1) and best compression (9)
-        }
-      }))
+      await vm.AddSprite(
+        zip.generateAsync({
+          type: "blob",
+          mimeType: "application/x.scratch.sb3",
+          compression: "DEFLATE",
+          compressionOptions: {
+            level: 6, // Tradeoff between best speed (1) and best compression (9)
+          },
+        })
+      );
 
       this._sprites.push(name);
     } catch (e) {
