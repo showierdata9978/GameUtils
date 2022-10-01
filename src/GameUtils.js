@@ -1,5 +1,4 @@
-
-var JSZip = import('unpkg.com/:jszip@:3.10.1/:min.js');
+var JSZip = import("unpkg.com/:jszip@:3.10.1/:min.js");
 
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
@@ -282,4 +281,3 @@ export class GameUtils {
     console.log("GameUtils has loaded.");
   }
 })();
-
