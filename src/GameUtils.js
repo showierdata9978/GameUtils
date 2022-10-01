@@ -43,15 +43,11 @@ class GameUtils {
         {
           opcode: "create_sprite",
           blockType: "command",
-          text: "create sprite from [json] and sprite assets uri [uri]",
+          text: "create sprite from [json]",
           arguments: {
             json: {
               type: "string",
               defaultValue: "{}",
-            },
-            uri: {
-              type: "string",
-              defaultValue: "",
             },
           },
         },
