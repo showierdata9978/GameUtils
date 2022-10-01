@@ -5,7 +5,7 @@ var JSZip = import('unpkg.com/:jszip@:3.10.1/:min.js');
 /*global vm */
 /*eslint no-undef: "error"*/
 
-export class GameUtils {
+class GameUtils {
   constructor(runtime, id) {
     //ext stuff
     this.runtime = runtime;
