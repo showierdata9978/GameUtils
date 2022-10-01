@@ -1,6 +1,4 @@
 
-import {JSZip} from 'https://unpkg.com/:jszip@:3.10.1/:min.js';
-
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
 /*eslint no-undef: "error"*/
@@ -34,11 +32,11 @@ class GameUtils {
         {
           opcode: "create_sprite",
           blockType: "command",
-          text: "create sprite from [json]",
+          text: "create sprite from [url]",
           arguments: {
-            json: {
+            url: {
               type: "string",
-              defaultValue: "{}",
+              defaultValue: "",
             },
           },
         },
@@ -112,6 +110,11 @@ class GameUtils {
           text: "Stop audio",
           arguments: {},
         },
+        {
+          opcode:"sounds_done",
+          blockType:"boolean",
+          text: "Is Sound From URL Done?"
+        }
       ],
     };
   }
@@ -128,66 +131,16 @@ class GameUtils {
 
   async create_sprite(args) {
     try {
-      if (JSZip === undefined) {
-        console.error("Cant find JSZip");
-        return;
+      const sprite_zip = await fetch(args.url);
+      if (sprite_zip.status == 200) {
+        const sprite_zip_buffer = await sprite_zip.blob();
+        var sprite = await vm.AddSprite(sprite_zip_buffer);
+        this._sprites.push(sprite.id);
+      } else {
+        console.log("Failed to fetch sprite:  Status: " + sprite_zip.status, + " " + sprite_zip.statusText);
       }
 
-      var json = JSON.parse(args.json);
-      var name = json.name;
-      var costumes = json["costumes"];
-
-      json["costumes"] = [];
-
-      var promises = [];
-      var GottenCostumes = [];
-      const zip = new JSZip();
-      zip.file("sprite.json", json);
-      var req;
-      for (var costume in costumes) {
-        promises.push(
-          new Promise(async (resolve, reject) => {
-            var costume = costumes[costume];
-            var asset_blob = await this.fetch_asset(costume);
-            if (asset_blob) {
-              GottenCostumes.push(asset_blob);
-              return resolve();
-            }
-            return reject();
-          })
-        );
-      }
-
-      var GottenSounds = [];
-      for (var sound in json["sounds"]) {
-        promises.push(
-          new Promise(async (resolve, reject) => {
-            var sound = json["sounds"][sound];
-            var asset_blob = await this.fetch_asset(sound);
-            if (asset_blob) {
-              GottenSounds.push(asset_blob);
-              return resolve();
-            }
-            return reject();
-          })
-        );
-      }
-
-      await Promise.all(promises);
-      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip);
-
-      await vm.AddSprite(
-        zip.generateAsync({
-          type: "blob",
-          mimeType: "application/x.scratch.sb3",
-          compression: "DEFLATE",
-          compressionOptions: {
-            level: 6, // Tradeoff between best speed (1) and best compression (9)
-          },
-        })
-      );
-
-      this._sprites.push(name);
+      
     } catch (e) {
       console.error(e);
     }
@@ -203,9 +156,9 @@ class GameUtils {
   }
   async restore_sprite(args) {
     try {
-      this.deleted_sprites[args.sprite]();
-      delete this.deleted_sprites[args.sprite];
-      this._sprites.push(args.sprite);
+      this.deleted_sprites[args.sprite.id]();
+      delete this.deleted_sprites[args.sprite.id];
+      this._sprites.push(args.sprite.id);
     } catch (e) {
       console.error(e);
     }
@@ -220,7 +173,7 @@ class GameUtils {
         if (req.status == 200) {
           const blob = await req.blob();
           const costume = await vm.addCostume(blob, sprite.id);
-          this._costumes.push(costume.name);
+          this._costumes.push(costume.id);
         } else {
           console.error("Failed to fetch costume");
         }
@@ -253,13 +206,16 @@ class GameUtils {
     this.audio_player.currentTime = 0;
     this.audio_player.src = URL;
     this.audio_player.play();
-    this.audio_player.loop = true;
+    this.audio_player.loop = false;
   }
 
   stopAudio({}) {
     this.audio_player.pause();
     this.audio_player.currentTime = 0;
     this.audio_player.src = null;
+  }
+  sounds_done() {
+    return this.audio_player.ended;
   }
 }
 
