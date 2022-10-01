@@ -1,4 +1,3 @@
-
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
 /*eslint no-undef: "error"*/
@@ -111,10 +110,10 @@ class GameUtils {
           arguments: {},
         },
         {
-          opcode:"sounds_done",
-          blockType:"boolean",
-          text: "Is Sound From URL Done?"
-        }
+          opcode: "sounds_done",
+          blockType: "boolean",
+          text: "Is Sound From URL Done?",
+        },
       ],
     };
   }
@@ -137,10 +136,11 @@ class GameUtils {
         var sprite = await vm.AddSprite(sprite_zip_buffer);
         this._sprites.push(sprite.id);
       } else {
-        console.log("Failed to fetch sprite:  Status: " + sprite_zip.status, + " " + sprite_zip.statusText);
+        console.log(
+          "Failed to fetch sprite:  Status: " + sprite_zip.status,
+          +" " + sprite_zip.statusText
+        );
       }
-
-      
     } catch (e) {
       console.error(e);
     }
@@ -238,4 +238,3 @@ class GameUtils {
     console.log("GameUtils has loaded.");
   }
 })();
-
