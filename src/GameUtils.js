@@ -3,9 +3,12 @@
 const body = document.querySelector('body');
 
 const zipjs_script = document.createElement('script');
-zipjs_script.src = '"https://deno.land/x/zipjs/index.js";';
+zipjs_script.src = 'https://deno.land/x/zipjs/index.js';
+zipjs_script.type = 'module';
 
 body.appendChild(zipjs_script);
+
+
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
 /*eslint no-undef: "error"*/
