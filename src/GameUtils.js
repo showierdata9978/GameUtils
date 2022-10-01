@@ -1,17 +1,13 @@
-
 //hacky way to import ZipJS
-const body = document.querySelector('body');
+const body = document.querySelector("body");
 
-const zipjs_script = document.createElement('script');
+const zipjs_script = document.createElement("script");
 zipjs_script.src = '"https://deno.land/x/zipjs/index.js";';
 
 body.appendChild(zipjs_script);
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
 /*eslint no-undef: "error"*/
-
-
-
 
 class GameUtils {
   constructor(runtime, id) {
@@ -27,7 +23,6 @@ class GameUtils {
     this._costumes = [];
 
     this.audio_player = new Audio();
-
   }
 
   getInfo() {
@@ -105,21 +100,21 @@ class GameUtils {
 
         //sound stuff
         {
-          "opcode": 'playAudioFromURL',
-          "blockType": "command",
-          "text": 'Play audio [URL]',
-          "arguments": {
-            "URL": {
-              "type": "string",
-              "defaultValue": 'https://scratch.mit.edu/sounds/music/8bit.mp3',
+          opcode: "playAudioFromURL",
+          blockType: "command",
+          text: "Play audio [URL]",
+          arguments: {
+            URL: {
+              type: "string",
+              defaultValue: "https://scratch.mit.edu/sounds/music/8bit.mp3",
             },
           },
         },
         {
-          "opcode": 'stopAudio',
-          "blockType": "command",
-          "text": 'Stop audio',
-          "arguments": {},
+          opcode: "stopAudio",
+          blockType: "command",
+          text: "Stop audio",
+          arguments: {},
         },
       ],
     };
@@ -133,7 +128,6 @@ class GameUtils {
     } else {
       return null;
     }
-
   }
 
   async create_sprite(args) {
@@ -145,53 +139,57 @@ class GameUtils {
 
       var json = JSON.parse(args.json);
       var name = json.name;
-      var costumes = json['costumes'];
+      var costumes = json["costumes"];
 
-
-      json['costumes'] = [];
-
+      json["costumes"] = [];
 
       var promises = [];
-      var GottenCostumes = []
+      var GottenCostumes = [];
       const zip = new JSZip();
-      zip.file('sprite.json', json);
+      zip.file("sprite.json", json);
       var req;
       for (var costume in costumes) {
-        promises.push(new Promise(async (resolve, reject) => {
-          var costume = costumes[costume];
-          var asset_blob = await this.fetch_asset(costume);
-          if (asset_blob) {
-            GottenCostumes.push(asset_blob);
-            return resolve();
-          }
-          return reject();
-        }))
-      };
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            var costume = costumes[costume];
+            var asset_blob = await this.fetch_asset(costume);
+            if (asset_blob) {
+              GottenCostumes.push(asset_blob);
+              return resolve();
+            }
+            return reject();
+          })
+        );
+      }
 
       var GottenSounds = [];
-      for (var sound in json['sounds']) {
-        promises.push(new Promise(async (resolve, reject) => {
-          var sound = json['sounds'][sound];
-          var asset_blob = await this.fetch_asset(sound);
-          if (asset_blob) {
-            GottenSounds.push(asset_blob);
-            return resolve();
-          }
-          return reject();
-        }))
-      };
+      for (var sound in json["sounds"]) {
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            var sound = json["sounds"][sound];
+            var asset_blob = await this.fetch_asset(sound);
+            if (asset_blob) {
+              GottenSounds.push(asset_blob);
+              return resolve();
+            }
+            return reject();
+          })
+        );
+      }
 
       await Promise.all(promises);
-      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip)
+      vm._addFileDescsToZip(GottenCostumes.concat(GottenSounds), zip);
 
-      await vm.AddSprite(zip.generateAsync({
-        type: 'blob',
-        mimeType: 'application/x.scratch.sb3',
-        compression: 'DEFLATE',
-        compressionOptions: {
-          level: 6 // Tradeoff between best speed (1) and best compression (9)
-        }
-      }))
+      await vm.AddSprite(
+        zip.generateAsync({
+          type: "blob",
+          mimeType: "application/x.scratch.sb3",
+          compression: "DEFLATE",
+          compressionOptions: {
+            level: 6, // Tradeoff between best speed (1) and best compression (9)
+          },
+        })
+      );
 
       this._sprites.push(name);
     } catch (e) {
@@ -221,15 +219,14 @@ class GameUtils {
     try {
       // get current sprite
       if (util.target.isSprite) {
-
         var sprite = util.target.sprite;
-        const req = (await fetch(args.uri))
+        const req = await fetch(args.uri);
         if (req.status == 200) {
           const blob = await req.blob();
           const costume = await vm.addCostume(blob, sprite.id);
           this._costumes.push(costume.name);
         } else {
-          console.error('Failed to fetch costume');
+          console.error("Failed to fetch costume");
         }
       } else {
         console.error("Internal Error: Target is not a sprite");
@@ -261,13 +258,13 @@ class GameUtils {
     this.audio_player.src = URL;
     this.audio_player.play();
     this.audio_player.loop = true;
-  };
+  }
 
-  stopAudio({ }) {
+  stopAudio({}) {
     this.audio_player.pause();
     this.audio_player.currentTime = 0;
     this.audio_player.src = null;
-  };
+  }
 }
 
 // Register the extension as unsandboxed
