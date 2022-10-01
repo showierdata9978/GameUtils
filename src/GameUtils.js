@@ -2,7 +2,7 @@
 /*global vm */
 /*eslint no-undef: "error"*/
 
-const JSZip = require('jszip');
+import * as JSZip from "https://deno.land/x/zipjs/index.js";
 
 
 class GameUtils {
