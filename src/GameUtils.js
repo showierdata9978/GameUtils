@@ -1,5 +1,5 @@
 
-var JSZip = import('unpkg.com/:jszip@:3.10.1/:min.js');
+import {JSZip} from 'https://unpkg.com/:jszip@:3.10.1/:min.js';
 
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
