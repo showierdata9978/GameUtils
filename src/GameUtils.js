@@ -110,10 +110,10 @@ class GameUtils {
           arguments: {},
         },
         {
-          opcode:"sounds_done",
-          blockType:"reporter",
-          text: "Is Sound From URL Done?"
-        }
+          opcode: "sounds_done",
+          blockType: "reporter",
+          text: "Is Sound From URL Done?",
+        },
       ],
     };
   }
