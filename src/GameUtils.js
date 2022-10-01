@@ -1,11 +1,11 @@
-//hacky way to import ZipJS
-var JSZip = __webpack_require__(56);
+
+var JSZip = import('unpkg.com/:jszip@:3.10.1/:min.js');
 
 // vm: Scratch VM (https://raw.githubusercontent.com/LLK/scratch-vm/develop/src/index.js)
 /*global vm */
 /*eslint no-undef: "error"*/
 
-class GameUtils {
+export class GameUtils {
   constructor(runtime, id) {
     //ext stuff
     this.runtime = runtime;
@@ -282,3 +282,4 @@ class GameUtils {
     console.log("GameUtils has loaded.");
   }
 })();
+
