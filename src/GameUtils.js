@@ -3,7 +3,7 @@
 /*eslint no-undef: "error"*/
 
 class GameUtils {
-  constructor(runtime, id) {
+  constructor(runtime, id) { //cq: ignore
     //ext stuff
     this.runtime = runtime;
     this.menuIconURI = null;
@@ -66,7 +66,7 @@ class GameUtils {
         {
           opcode: "create_costume",
           blockType: "command",
-          text: "create costume [costume] from [uri]",
+          text: "create costume from [uri]",
           arguments: {
             costume: {
               type: "string",
@@ -114,20 +114,33 @@ class GameUtils {
           blockType: "reporter",
           text: "Is Sound From URL Done?",
         },
+        {
+          opcode:"loadUnsandBoxed",
+          blockType:"command",
+          text: "load unsandboxed ext from [uri]",
+          arguments: {
+            uri: {
+              type: "string",
+              defaultValue: "",
+            }
+          }
+        }
+        {
+          opcode:"loadSandboxed",
+          blockType:"command",
+          text: "load sandboxed ext from [uri]",
+          arguments: {
+            uri: {
+              type: "string",
+              defaultValue: "",
+        },
+        }}
       ],
     };
   }
 
-  async fetch_asset(url) {
-    const response = await fetch(url);
-    if (response.status == 200) {
-      const blob = await response.blob();
-      return blob;
-    } else {
-      return null;
-    }
-  }
-
+  
+  
   async create_sprite(args) {
     try {
       const sprite_zip = await fetch(args.url);
@@ -201,6 +214,7 @@ class GameUtils {
       console.error(e);
     }
   }
+  
   playAudioFromURL({ URL }) {
     this.audio_player.pause();
     this.audio_player.currentTime = 0;
@@ -208,6 +222,7 @@ class GameUtils {
     this.audio_player.play();
     this.audio_player.loop = false;
   }
+  
 
   stopAudio({}) {
     this.audio_player.pause();
@@ -217,6 +232,21 @@ class GameUtils {
   sounds_done() {
     return this.audio_player.ended;
   }
+
+  async loadUnsandboxed(args) {
+    let req = await fetch(args.url);
+    if (req.status == 200) {
+      eval(req.responseText); //let extentiion do its thing
+
+    } else {
+      console.error("Failed to fetch extention from url");
+      return;
+    }
+  }
+  async loadSandboxed(args) {
+    
+      vm.extensionManager.loadExtensionURL(args.uri)
+    }
 }
 
 // Register the extension as unsandboxed
