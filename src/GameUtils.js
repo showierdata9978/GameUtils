@@ -90,7 +90,7 @@ class GameUtils {
             },
           },
         },
-
+  
         //sound stuff
         {
           opcode: "playAudioFromURL",
@@ -124,7 +124,7 @@ class GameUtils {
               defaultValue: "",
             }
           }
-        }
+        },
         {
           opcode:"loadSandboxed",
           blockType:"command",
